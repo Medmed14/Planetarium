@@ -223,6 +223,22 @@ section:nth-child(odd) {
     }
 }
 
+@media (max-width: 768px) {
+
+  .section {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+  }
+
+  .section h1,
+  .section h2 {
+    font-size: 2rem;
+  }
+
+}
+
 @media screen and (max-width: 660px) {
     .info-box {
         font-size: .8em;

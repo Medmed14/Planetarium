@@ -2,6 +2,11 @@ import * as THREE from 'three'
 import GUI from 'lil-gui'
 
 /**
+ * mobile detec
+ */
+const isMobile = window.matchMedia("(max-width: 768px)").matches;
+
+/**
  * Debug
  */
 const planetLight = new THREE.DirectionalLight('#ffffff', 3);
@@ -23,6 +28,7 @@ gui.add(planetLightControls, 'light Z Axis', 0, 10).onChange((value) => {
 /**
  * Base
  */
+
 // Canvas
 const canvas = document.querySelector('canvas.webgl')
 
@@ -312,8 +318,21 @@ neptune.position.y = - objectsDistance * 8
 neptune.position.x = 1.5
 neptune.rotation.y = 2
 
+if (isMobile) {
+    console.log('mobile')
+    sun.position.x = 0;
+    mercury.position.x = 0;
+    venus.position.x = 0;
+    earthGroup.position.x = 0;
+    mars.position.x = 0;
+    jupiter.position.x = 0;
+    saturnGroup.position.x = 0;
+    uranusGroup.position.x = 0;
+    neptune.position.x = 0;
+} 
 scene.add(sun, mercury, venus, earthGroup, mars, jupiter, saturnGroup, uranusGroup, neptune)
 const sectionMeshes = [sun, mercury, venus, earthGroup, mars, jupiter, saturnGroup, uranusGroup, neptune]
+
 
 /**
  * Particles
@@ -381,7 +400,12 @@ window.addEventListener('resize', () => {
 const cameraGroup = new THREE.Group()
 scene.add(cameraGroup)
 
-const camera = new THREE.PerspectiveCamera(35, sizes.width / sizes.height, 0.1, 100)
+const camera = new THREE.PerspectiveCamera(
+    isMobile ? 50 : 35,
+    sizes.width / sizes.height,
+    0.1,
+    100
+);
 camera.position.z = 6
 cameraGroup.add(camera)
 
@@ -435,35 +459,35 @@ function allowScroll() {
     document.body.style.overflow = '';
 }
 function preventDefault(e) {
-  // Vérifier si l'événement de défilement provient de la popup
-  const infoBox = document.querySelector('.info-box.visible');
-  if (infoBox && infoBox.contains(e.target)) {
-    // Permettre le défilement à l'intérieur de la popup
-    return;
-  }
-  e.preventDefault();
+    // Vérifier si l'événement de défilement provient de la popup
+    const infoBox = document.querySelector('.info-box.visible');
+    if (infoBox && infoBox.contains(e.target)) {
+        // Permettre le défilement à l'intérieur de la popup
+        return;
+    }
+    e.preventDefault();
 }
 
 function showInfoBox(id) {
-  hideAllInfoBoxes();
-  const infoBox = document.getElementById(id);
-  if (!infoBox) return;
-  infoBox.classList.add('visible');
-  overlay.classList.add('visible');
-  preventScroll();
-  // Accessibilité sans scroll auto (évite scrollIntoView)
-  infoBox.setAttribute('tabindex', '-1');
-  if (infoBox.focus) {
-    try { infoBox.focus({ preventScroll: true }); } catch (_) { infoBox.focus(); }
-  }
+    hideAllInfoBoxes();
+    const infoBox = document.getElementById(id);
+    if (!infoBox) return;
+    infoBox.classList.add('visible');
+    overlay.classList.add('visible');
+    preventScroll();
+    // Accessibilité sans scroll auto (évite scrollIntoView)
+    infoBox.setAttribute('tabindex', '-1');
+    if (infoBox.focus) {
+        try { infoBox.focus({ preventScroll: true }); } catch (_) { infoBox.focus(); }
+    }
 }
 
 function hideAllInfoBoxes() {
-  document.querySelectorAll('.info-box.visible').forEach(box => {
-    box.classList.remove('visible');
-  });
-  overlay.classList.remove('visible');
-  allowScroll();
+    document.querySelectorAll('.info-box.visible').forEach(box => {
+        box.classList.remove('visible');
+    });
+    overlay.classList.remove('visible');
+    allowScroll();
 }
 
 
