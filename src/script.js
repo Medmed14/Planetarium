@@ -276,7 +276,7 @@ venus.position.x = 1.5
 venus.rotation.y = 2
 
 // earth and moon
-let earthTiltAngle = Math.PI * 23.5 / 180 
+let earthTiltAngle = Math.PI * 23.5 / 180
 earthGroup.position.y = - objectsDistance * 3
 earthGroup.position.x = - 1.5
 earthGroup.rotation.z = earthTiltAngle
@@ -402,9 +402,10 @@ renderer.localClippingEnabled = true;
 let scrollY = window.scrollY
 let currentSection = 0
 window.addEventListener('scroll', () => {
-    scrollY = window.scrollY
-    const newSection = Math.round(scrollY / sizes.height)
-})
+    if (!isModalOpen) {
+        scrollY = window.scrollY;
+    }
+});
 
 /**
  * Cursor
@@ -419,38 +420,63 @@ window.addEventListener('mousemove', (event) => {
  * Explications box (popups + overlay)
  */
 const overlay = document.getElementById('modal-overlay');
+let isModalOpen = false;
+let frozenScrollY = 0;
+
+function preventScroll() {
+    isModalOpen = true;
+    frozenScrollY = window.scrollY;
+    scrollY = frozenScrollY;
+    document.body.style.overflow = 'hidden';
+}
+
+function allowScroll() {
+    isModalOpen = false;
+    document.body.style.overflow = '';
+}
+function preventDefault(e) {
+  // Vérifier si l'événement de défilement provient de la popup
+  const infoBox = document.querySelector('.info-box.visible');
+  if (infoBox && infoBox.contains(e.target)) {
+    // Permettre le défilement à l'intérieur de la popup
+    return;
+  }
+  e.preventDefault();
+}
 
 function showInfoBox(id) {
-    hideAllInfoBoxes();
-    const infoBox = document.getElementById(id);
-    if (!infoBox) return;
-    infoBox.classList.add('visible');
-    overlay.classList.add('visible');
-    // Accessibilité sans scroll auto (évite scrollIntoView)
-    infoBox.setAttribute('tabindex', '-1');
-    if (infoBox.focus) {
-        try { infoBox.focus({ preventScroll: true }); } catch (_) { infoBox.focus(); }
-    }
+  hideAllInfoBoxes();
+  const infoBox = document.getElementById(id);
+  if (!infoBox) return;
+  infoBox.classList.add('visible');
+  overlay.classList.add('visible');
+  preventScroll();
+  // Accessibilité sans scroll auto (évite scrollIntoView)
+  infoBox.setAttribute('tabindex', '-1');
+  if (infoBox.focus) {
+    try { infoBox.focus({ preventScroll: true }); } catch (_) { infoBox.focus(); }
+  }
 }
 
 function hideAllInfoBoxes() {
-    document.querySelectorAll('.info-box.visible').forEach(box => {
-        box.classList.remove('visible');
-    });
-    overlay.classList.remove('visible');
+  document.querySelectorAll('.info-box.visible').forEach(box => {
+    box.classList.remove('visible');
+  });
+  overlay.classList.remove('visible');
+  allowScroll();
 }
+
 
 // Prépare chaque popup : stop propagation + bouton de fermeture
 document.querySelectorAll('.info-box').forEach(box => {
-    // Empêche le clic interne de fermer la popup
+
     box.addEventListener('click', e => e.stopPropagation());
 
-    // Ajoute la croix si absente
     if (!box.querySelector('.close-btn')) {
         const btn = document.createElement('div');
         btn.className = 'close-btn';
         btn.setAttribute('aria-label', 'Fermer la fenêtre d’information');
-        // pas de texte à l’intérieur : la croix est dessinée en CSS (::before/::after)
+
         btn.addEventListener('click', e => {
             e.stopPropagation();
             hideAllInfoBoxes();
@@ -474,7 +500,7 @@ const raycaster = new THREE.Raycaster();
 const mouse = new THREE.Vector2();
 
 // Les ids d'info disponibles (doivent correspondre aux ids HTML: info-XXX)
-const INFO_KEYS = new Set(['sun','mercury','venus','earth','moon','mars','jupiter','saturn','uranus','neptune']);
+const INFO_KEYS = new Set(['sun', 'mercury', 'venus', 'earth', 'moon', 'mars', 'jupiter', 'saturn', 'uranus', 'neptune']);
 
 function findInfoKeyFromObject(obj) {
     let cur = obj;
@@ -591,15 +617,15 @@ let isPlaying = false;
 
 // Certains navigateurs bloquent l’autoplay → on déclenche après le premier clic
 audioControl.addEventListener("click", () => {
-  if (!isPlaying) {
-    bgMusic.play();
-    playIcon.style.display = "none";
-    pauseIcon.style.display = "block";
-    isPlaying = true;
-  } else {
-    bgMusic.pause();
-    playIcon.style.display = "block";
-    pauseIcon.style.display = "none";
-    isPlaying = false;
-  }
+    if (!isPlaying) {
+        bgMusic.play();
+        playIcon.style.display = "none";
+        pauseIcon.style.display = "block";
+        isPlaying = true;
+    } else {
+        bgMusic.pause();
+        playIcon.style.display = "block";
+        pauseIcon.style.display = "none";
+        isPlaying = false;
+    }
 });
