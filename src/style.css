@@ -1,0 +1,231 @@
+* {
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    background-color: rgb(0, 0, 0);
+}
+
+.webgl {
+    position: fixed;
+    top: 0;
+    left: 0;
+    outline: none;
+}
+
+.section {
+    display: flex;
+    align-items: center;
+    height: 100vh;
+    position: relative;
+    font-family: 'Cabin', sans-serif;
+    color: #ffeded;
+    text-transform: uppercase;
+    font-size: 7vmin;
+    padding-left: 10%;
+    padding-right: 10%;
+}
+
+section:nth-child(odd) {
+    justify-content: flex-end;
+}
+
+/* ====== Bouton audio HUD ====== */
+.audio-btn {
+    position: fixed;
+    top: 14px;
+    left: 14px;
+    width: 42px;
+    height: 42px;
+    border-radius: 50%;
+    z-index: 2000;
+    display: grid;
+    place-items: center;
+    cursor: pointer;
+
+    background:
+        radial-gradient(90% 90% at 50% 35%, rgba(120, 200, 255, .12), rgba(0, 0, 0, 0)),
+        linear-gradient(180deg, rgba(10, 20, 36, .85), rgba(8, 12, 22, .8));
+    border: 1px solid rgba(120, 200, 255, .6);
+    box-shadow:
+        0 0 0 1px rgba(120, 200, 255, .25) inset,
+        0 6px 18px rgba(10, 20, 36, .35),
+        0 0 12px rgba(120, 200, 255, .3);
+    transition: transform .15s ease, box-shadow .2s ease, filter .2s ease;
+}
+
+.audio-btn:hover {
+    transform: scale(1.06);
+    filter: brightness(1.06);
+}
+
+.audio-btn svg {
+    fill: #9cf;
+    filter: drop-shadow(0 0 6px rgba(120, 200, 255, .6));
+    pointer-events: none;
+}
+
+
+/* ======================
+   Overlay sombre + flou
+====================== */
+.overlay {
+    position: fixed;
+    inset: 0;
+    z-index: 9;
+    background: rgba(0, 0, 0, 0.55);
+    backdrop-filter: blur(4px) saturate(120%);
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity .25s ease;
+}
+
+.overlay.visible {
+    opacity: 1;
+    pointer-events: auto;
+}
+
+/* ======================
+   Info-box futuriste
+====================== */
+.info-box {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%) scale(.96);
+    min-width: clamp(320px, 50vw, 860px);
+    min-height: clamp(280px, 50vh, 600px);
+
+    background:
+        radial-gradient(120% 120% at 30% 10%, rgba(80, 160, 255, .12) 0%, rgba(0, 0, 0, 0) 40%),
+        linear-gradient(180deg, rgba(16, 26, 46, .9) 0%, rgba(10, 14, 25, .85) 100%);
+    border: 1px solid rgba(120, 200, 255, .35);
+    border-radius: 14px;
+    box-shadow:
+        0 0 0 1px rgba(100, 180, 255, .25) inset,
+        0 10px 50px rgba(0, 10, 30, .55),
+        0 0 24px rgba(100, 180, 255, .25);
+
+    color: #e9f3ff;
+    font-family: 'Orbitron', system-ui, sans-serif;
+    letter-spacing: .1em;
+    line-height: 1.6em;
+    font-size: 1.2em;
+    padding: 35px;
+    /* ✅ Ajout de padding interne */
+
+    z-index: 999;
+    /* 🚀 Toujours au-dessus de l’overlay */
+    opacity: 0;
+    pointer-events: none;
+    transition:
+        opacity .28s ease,
+        transform .28s cubic-bezier(.2, .6, .2, 1);
+}
+
+.info-box.visible {
+    opacity: 1;
+    pointer-events: auto;
+    transform: translate(-50%, -50%) scale(1);
+    animation: holoPulse 2.2s ease-in-out infinite;
+}
+
+.info-box .hud-header {
+    text-align: center;
+    padding-bottom: 1rem;
+}
+
+.info-box p {
+    margin-top: 1.2rem;
+}
+
+/* ======================
+   Croix de fermeture futuriste
+====================== */
+.close-btn {
+    position: absolute;
+    top: 14px;
+    right: 18px;
+    width: 28px;
+    height: 28px;
+    cursor: pointer;
+    z-index: 1000;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    /* Croix en pseudo-éléments */
+}
+
+.close-btn::before,
+.close-btn::after {
+    content: '';
+    position: absolute;
+    width: 20px;
+    height: 2px;
+    background: #9cf;
+    box-shadow: 0 0 6px rgba(100, 200, 255, .8);
+    transition: transform .3s, background .3s, box-shadow .3s;
+}
+
+.close-btn::before {
+    transform: rotate(45deg);
+}
+
+.close-btn::after {
+    transform: rotate(-45deg);
+}
+
+.close-btn:hover::before,
+.close-btn:hover::after {
+    background: #fff;
+    box-shadow: 0 0 10px rgba(150, 220, 255, 1), 0 0 20px rgba(100, 200, 255, .8);
+}
+
+/* ======================
+   Animation "HUD"
+====================== */
+@keyframes holoPulse {
+    0%, 100% {
+        box-shadow:
+            0 0 0 1px rgba(100, 180, 255, .25) inset,
+            0 10px 50px rgba(0, 10, 30, .55),
+            0 0 24px rgba(100, 180, 255, .25);
+    }
+
+    50% {
+        box-shadow:
+            0 0 0 2px rgba(100, 200, 255, .4) inset,
+            0 12px 60px rgba(0, 10, 40, .7),
+            0 0 36px rgba(100, 200, 255, .45);
+    }
+}
+
+
+/* ======================
+     Responsive
+====================== */
+
+@media screen and (max-width: 1450px) {
+    .info-box {
+        min-width: clamp(320px, 80vw, 860px);
+    }
+}
+
+@media screen and (max-width: 861px) {
+    .info-box {
+        font-size: 1em;
+    }
+}
+
+@media screen and (max-width: 660px) {
+    .info-box {
+        font-size: .8em;
+        padding: 12px;
+    }
+
+    .hud-header {
+        width: 85%;
+    }
+}

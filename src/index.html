@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html lang="fr">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1.0" />
+    <title>Planetarium</title>
+    <link rel="shortcut icon" type="image/x-icon" href="./favicon-space.png" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="./style.css" />
+</head>
+
+<body>
+    <canvas class="webgl"></canvas>
+
+    <!-- Contrôle audio -->
+    <div id="audio-control" class="audio-btn" title="Activer/Désactiver la musique" aria-label="Contrôle musique">
+        <!-- Icône SVG HUD (play/pause) -->
+        <svg id="audio-icon-play" viewBox="0 0 24 24" width="20" height="20" aria-hidden="true">
+            <polygon points="7,5 19,12 7,19" />
+        </svg>
+        <svg id="audio-icon-pause" viewBox="0 0 24 24" width="20" height="20" aria-hidden="true" style="display:none">
+            <rect x="6" y="5" width="4" height="14" rx="1"></rect>
+            <rect x="14" y="5" width="4" height="14" rx="1"></rect>
+        </svg>
+    </div>
+
+    <!-- Lecteur audio -->
+    <audio id="bg-music" loop preload="auto">
+        <source src="/audio/YearoftheDeer-KeplersHope.mp3" type="audio/mpeg">
+    </audio>
+
+    <section class="section">
+        <h1>Soleil</h1>
+    </section>
+    <section class="section">
+        <h2>Mercure</h2>
+    </section>
+    <section class="section">
+        <h2>Vénus</h2>
+    </section>
+    <section class="section">
+        <h2>Terre</h2>
+    </section>
+    <section class="section">
+        <h2>Mars</h2>
+    </section>
+    <section class="section">
+        <h2>Jupiter</h2>
+    </section>
+    <section class="section">
+        <h2>Saturne</h2>
+    </section>
+    <section class="section">
+        <h2>Uranus</h2>
+    </section>
+    <section class="section">
+        <h2>Neptune</h2>
+    </section>
+
+    <!-- Popups d’information (texte vulgarisé, avec “env.” pour les approximations) -->
+    <div id="info-sun" class="info-box">
+        <div class="scanlines"></div>
+        <h3 class="hud-header">Soleil — Notre réacteur naturel</h3>
+        <div class="hud-sep"></div>
+        <div class="hud-content">
+            <p>Le Soleil est une naine jaune (type G2V) qui concentre env. 99,8 % de la masse du Système solaire. Il
+                brille grâce à la fusion : chaque seconde, env. 600 millions de tonnes d’hydrogène deviennent hélium,
+                libérant une énergie colossale.</p>
+            <p><strong>Structure</strong> : cœur (fusion à plus de 15 millions °C), zone radiative où les photons
+                dérivent pendant des millénaires, zone convective “bouillonnante”, puis photosphère (env. 5 500 °C),
+                chromosphère et couronne très chaude.</p>
+            <p><strong>Climat spatial</strong> : son cycle magnétique d’env. 11 ans rythme taches, éruptions et vent
+                solaire, à l’origine des aurores et de perturbations possibles pour les satellites.</p>
+            <p><strong>Échelle</strong> : diamètre env. 1,39 million de km (env. 109 Terres alignées). Âge env. 4,6
+                milliards d’années ; dans env. 5 milliards d’années, il deviendra une géante rouge.</p>
+            <p><strong>Distance Terre–Soleil</strong> : env. 149,6 millions de km (1 UA).</p>
+        </div>
+    </div>
+
+    <div id="info-mercury" class="info-box">
+        <div class="scanlines"></div>
+        <h3 class="hud-header">Mercure — Le monde des extrêmes</h3>
+        <div class="hud-sep"></div>
+        <div class="hud-content">
+            <p>Plus petite planète (diamètre env. 4 879 km) et la plus proche du Soleil. Sans véritable atmosphère,
+                Mercure gèle la nuit et brûle le jour.</p>
+            <p><strong>Météo</strong> : de env. −180 °C la nuit à env. +430 °C le jour. <strong>Horloge</strong> :
+                rotation en 59 jours, révolution en 88 jours → une journée “midi à midi” dure env. 176 jours terrestres.
+            </p>
+            <p><strong>Géologie</strong> : surface criblée de cratères (bassin Caloris env. 1 550 km). Immenses falaises
+                dues au refroidissement global de la planète.</p>
+            <p><strong>Intérieur</strong> : noyau métallique très grand (densité élevée) ; magnétosphère faible mais
+                réelle.</p>
+            <p><strong>Distance Terre–Mercure</strong> : env. 92 millions de km (variable selon les positions).</p>
+        </div>
+    </div>
+
+    <div id="info-venus" class="info-box">
+        <div class="scanlines"></div>
+        <h3 class="hud-header">Vénus — Jumelle infernale</h3>
+        <div class="hud-sep"></div>
+        <div class="hud-content">
+            <p>Presque la taille de la Terre, mais l’effet de serre y est incontrôlé : atmosphère de CO₂ très dense
+                (pression env. 92 bar), nuages d’acide sulfurique et température moyenne env. 465 °C.</p>
+            <p><strong>Rotation</strong> : rétrograde et très lente ; un jour vénusien est plus long qu’une année
+                vénusienne. En altitude, vents env. 300 à 360 km/h (super-rotation globale).</p>
+            <p><strong>Relief</strong> : volcans, plaines de lave, montagnes (Maxwell Montes). Des indices laissent
+                penser à une activité volcanique récente.</p>
+            <p><strong>Distance Terre–Vénus</strong> : minimum env. 41 millions de km (notre voisine la plus proche en
+                moyenne).</p>
+        </div>
+    </div>
+
+    <div id="info-earth" class="info-box">
+        <div class="scanlines"></div>
+        <h3 class="hud-header">Terre — L’oasis bleue</h3>
+        <div class="hud-sep"></div>
+        <div class="hud-content">
+            <p>Seule planète connue à abriter la vie. Env. 71 % d’océans, atmosphère protectrice (azote, oxygène) et
+                champ magnétique qui dévie les particules solaires.</p>
+            <p><strong>Tectonique des plaques</strong> : elle recycle la croûte, régule le CO₂ et stabilise le climat à
+                long terme. Notre grande Lune stabilise aussi l’inclinaison terrestre, d’où des saisons régulières.</p>
+            <p><strong>Échelle</strong> : si le Soleil était une sphère d’1 mètre, la Terre orbiterait à env. 107
+                mètres, minuscule bille bleue dans l’immensité.</p>
+            <p><strong>Distance Terre–Terre</strong> : 0 km (mais un univers d’histoires à raconter).</p>
+        </div>
+    </div>
+
+    <div id="info-moon" class="info-box">
+        <div class="scanlines"></div>
+        <h3 class="hud-header">La Lune — Métronome des marées</h3>
+        <div class="hud-sep"></div>
+        <div class="hud-content">
+            <p>Notre unique satellite. Gravité env. 1/6 de celle de la Terre, ciel noir en plein jour, quasiment pas
+                d’atmosphère : les traces d’Apollo subsisteront très longtemps.</p>
+            <p><strong>Phases & marées</strong> : la danse Terre–Lune soulève les océans et rythme nos nuits. La “face
+                cachée”, plus cratérisée, révèle une histoire différente.</p>
+            <p><strong>Ressources</strong> : glace d’eau aux pôles, utile pour l’exploration (eau, oxygène, carburant).
+            </p>
+            <p><strong>Distance Terre–Lune</strong> : env. 384 400 km (de env. 356 400 à env. 406 700 km selon
+                l’orbite).</p>
+        </div>
+    </div>
+
+    <div id="info-mars" class="info-box">
+        <div class="scanlines"></div>
+        <h3 class="hud-header">Mars — La nostalgie de l’eau</h3>
+        <div class="hud-sep"></div>
+        <div class="hud-content">
+            <p>Planète rouge (oxydes de fer), atmosphère ténue et grandes tempêtes de poussière. <strong>Olympus
+                    Mons</strong> culmine à env. 22 km : record du Système solaire.</p>
+            <p><strong>Eau passée</strong> : vallées, deltas et minéraux hydratés témoignent d’anciens fleuves.
+                Aujourd’hui, glace aux pôles et sans doute sous la surface. Les rovers modernes recherchent des
+                biosignatures fossiles.</p>
+            <p><strong>Saisons</strong> : proches de celles de la Terre, mais plus longues (année martienne env. 687
+                jours).</p>
+            <p><strong>Distance Terre–Mars</strong> : moyenne env. 225 millions de km ; minimum env. 54,6 millions de km
+                lors d’oppositions favorables.</p>
+        </div>
+    </div>
+
+    <div id="info-jupiter" class="info-box">
+        <div class="scanlines"></div>
+        <h3 class="hud-header">Jupiter — Le colosse aux tempêtes</h3>
+        <div class="hud-sep"></div>
+        <div class="hud-content">
+            <p>Géante gazeuse env. 318 fois plus massive que la Terre. Sa <strong>Grande Tache Rouge</strong> est une
+                tempête vieille de plusieurs siècles, plus vaste que notre planète.</p>
+            <p><strong>Magnétosphère</strong> : la plus puissante du Système solaire. Jupiter aide à “nettoyer” le
+                voisinage en déviant ou capturant de nombreux corps.</p>
+            <p><strong>Lunes</strong> : au moins 95. Europe abrite probablement un océan salé sous sa glace ; Io est le
+                monde le plus volcanique connu ; Ganymède est la plus grande lune du Système solaire.</p>
+            <p><strong>Distance Terre–Jupiter</strong> : env. 628 millions de km en moyenne (variable).</p>
+        </div>
+    </div>
+
+    <div id="info-saturn" class="info-box">
+        <div class="scanlines"></div>
+        <h3 class="hud-header">Saturne — Dentelle de glace</h3>
+        <div class="hud-sep"></div>
+        <div class="hud-content">
+            <p>Anneaux spectaculaires faits de glace et de roches, souvent très fins (épaisseur de l’ordre de quelques
+                dizaines de mètres) mais très étendus.</p>
+            <p><strong>Densité</strong> : env. 0,69 ; Saturne “flotterait” dans une baignoire assez grande. Des vents
+                peuvent dépasser 1 000 km/h.</p>
+            <p><strong>Deux joyaux</strong> : Encelade projette des geysers d’eau salée (indice d’océan interne) ; Titan
+                possède mers et pluies d’hydrocarbures — des environnements uniques pour l’exobiologie.</p>
+            <p><strong>Distance Terre–Saturne</strong> : env. 1,2 milliard de km en moyenne.</p>
+        </div>
+    </div>
+
+    <div id="info-uranus" class="info-box">
+        <div class="scanlines"></div>
+        <h3 class="hud-header">Uranus — La planète couchée</h3>
+        <div class="hud-sep"></div>
+        <div class="hud-content">
+            <p>Inclinaison de l’axe env. 98° : Uranus “roule” sur son orbite. Résultat : des saisons extrêmes qui durent
+                des décennies, avec des pôles longtemps plongés dans l’ombre ou la lumière.</p>
+            <p><strong>Couleur</strong> : bleu-vert due au méthane qui absorbe la lumière rouge. Températures minimales
+                env. −224 °C, parmi les plus froides mesurées.</p>
+            <p><strong>Anneaux sombres</strong>, nombreuses lunes (Miranda, Ariel, Titania…) et structure interne encore
+                mystérieuse (possibles “océans” d’eau/ammoniaque sous pression). Un grand impact passé pourrait
+                expliquer son inclinaison.</p>
+            <p><strong>Distance Terre–Uranus</strong> : env. 2,6 milliards de km en moyenne.</p>
+        </div>
+    </div>
+
+    <div id="info-neptune" class="info-box">
+        <div class="scanlines"></div>
+        <h3 class="hud-header">Neptune — L’atelier des vents</h3>
+        <div class="hud-sep"></div>
+        <div class="hud-content">
+            <p>Plus lointaine des planètes majeures. Atmosphère d’un bleu profond animée de vents parmi les plus rapides
+                connus, pouvant atteindre env. 2 100 km/h.</p>
+            <p><strong>Découverte</strong> : prévue par calcul à partir d’anomalies d’Uranus, puis observée — une
+                victoire de la mécanique céleste.</p>
+            <p><strong>Triton</strong> : grande lune à l’orbite rétrograde, probablement un objet capturé.
+                Cryovolcanisme et surface glacée intrigante.</p>
+            <p><strong>Distance Terre–Neptune</strong> : env. 4,3 milliards de km en moyenne.</p>
+        </div>
+    </div>
+
+    <!-- Overlay pour clic extérieur -->
+    <div id="modal-overlay" class="overlay" aria-hidden="true"></div>
+
+    <script type="module" src="./script.js"></script>
+</body>
+
+</html>
