@@ -212,7 +212,9 @@ section:nth-child(odd) {
 
 .site-footer {
     position: relative;
-    width: 100%;
+    width: 80%;
+    margin-left: auto;
+    margin-right: auto;
     padding: 60px 20px 40px;
     text-align: center;
     color: rgba(255, 255, 255, 0.6);
@@ -266,8 +268,6 @@ section:nth-child(odd) {
 
     .site-footer {
         width: 53%;
-        margin-left: auto;
-        margin-right: auto;
     }
 }
 
